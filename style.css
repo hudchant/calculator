@@ -1,0 +1,114 @@
+html {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    color: #191970;
+}
+
+/* Page name */
+h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Main container styling */
+.container {
+    display: flex;
+    justify-content: center;
+
+}
+
+/* Styling for divs within the calculator's display */
+.calculator {
+    border: 6px solid #191970;
+    border-radius: 10px;
+    width: 438px;
+    height: 500px;
+}
+
+/* Container for all button rows on the calculator */
+.rows {
+    display: flex;
+    justify-content: center;
+    margin: 30px;
+}
+
+/* Styling for all five button rows */
+.one,
+.two,
+.three,
+.four,
+.five {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+    width: 65px;
+    height: 65px;
+    background-color: #FFFDAF;
+    color: #191970;
+    border: 2px solid #191970;
+    font-weight: 900;
+    font-size: 35px;
+    margin: 15px 8px;
+    border-radius: 10px;
+    box-shadow: 8px 8px 5px #191970;
+}
+
+/* Styling for all five button rows when hovering */
+.one:hover,
+.two:hover,
+.three:hover,
+.four:hover,
+.five:hover {
+    opacity: 0.8;
+}
+
+/* Sizing for the 'equals' button */
+.large {
+    width: 65px;
+    height: 145px;
+}
+
+/* Coloring for the 'C' (clear) button */
+.clear {
+    background-color: #DD635D;
+}
+
+/* Coloring for all the symbols buttons */
+.symbol {
+    background-color: #ECECEC;
+}
+
+/* Styling for the calculator's main display */
+.display {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    margin: 15px;
+    flex-direction: column;
+    border: 4px solid #191970;
+    border-radius: 10px;
+    width: 400px;
+    height: 100px;
+}
+
+/* Styling for 'DigiCalc' name in the lower right corner of display */
+.name {
+    display: flex;
+    font-size: 10px;
+    font-weight: 900;
+    margin: 0px 2px 2px 0px;
+    text-shadow: 1px 1px 2px #191970;
+}
+
+/* Styling for numbers entered into calculator's main display */
+.numbers {
+    display: flex;
+    font-size: 70px;
+    font-weight: bolder;
+    margin: 0;
+}

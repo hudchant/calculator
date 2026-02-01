@@ -56,7 +56,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const selection = button.id; // User selection is linked to the id of the button pressed
 
             // If user selects number(s), store them in the userInput variable and push them onto the display
-            if (!isNaN(selection)) {
+            // Set a limit to userInput length
+            if (!isNaN(selection) && userInput.length < 9) {
                 userInput += selection;
                 numberSelection.textContent = userInput;
 
@@ -69,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // If equal sign is pressed and firstNum and operator are already set, store next number(s)
                 // in secondNum variable and call operate() function on the operation
-            } else if (selection === '=' && firstNum !== null && operator && userInput) {
+            } else if (selection === '=' && firstNum && operator && userInput) {
                 secondNum = parseFloat(userInput);
                 let answer = operate(firstNum, secondNum, operator);
                 numberSelection.textContent = answer; // Display answer on screen
@@ -87,8 +88,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 operator = undefined;
                 userInput = '';
                 numberSelection.textContent = '';
+                // If '.' is entered, add a decimal, but don't allow more than one decimal per number
+            } else if (selection === '.' && !userInput.includes('.')) {
+                userInput += selection;
+                numberSelection.textContent += '.';
+                // If arrow (backspace) key is selected, remove one digit from the end of the currently displayed number
+            } else if (selection === 'arrow') {
+                userInput = userInput.substring(0, userInput.length - 1);
+                numberSelection.textContent = userInput;
+            } else if (firstNum !== null && secondNum !== null && (selection === '+' || selection === '-' || selection === '×' || selection === '÷')) {
+                operator = selection;
+                let answer = operate(firstNum, secondNum, operator);
+                numberSelection.textContent = answer; // Display answer on screen
             }
         });
     });
 });
+
+
 

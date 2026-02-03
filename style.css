@@ -114,6 +114,7 @@ h1 {
 .numbers {
     display: flex;
     font-size: 70px;
-    font-weight: bolder;
     margin: 0;
 }
+
+

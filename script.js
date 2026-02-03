@@ -36,7 +36,7 @@ function operate(firstNum, secondNum, operator) {
         case '÷':
             return divide(firstNum, secondNum);
         default:
-            "Invalid selection. Please try again."
+            return 'Invalid selection. Please try again.';
     }
 }
 
@@ -72,6 +72,33 @@ document.addEventListener('DOMContentLoaded', function () {
                 // in secondNum variable and call operate() function on the operation
             } else if (selection === '=' && firstNum && operator && userInput) {
                 secondNum = parseFloat(userInput);
+
+                // Do not allow the user to divide any number by zero
+                if (operator === '÷' && secondNum === 0) {
+
+                    numberSelection.textContent = 'You cannot divide by zero.' // Text warning
+                    numberSelection.style.color = '#CC0000'; // Set text color
+                    numberSelection.style.fontSize = '16px'; // Set text size
+                    numberSelection.style.position = 'absolute'; // Set text position
+                    numberSelection.style.left = '44%'; // Center text horizontally
+                    numberSelection.style.top = '29%'; // Center text vertically
+
+                    // Set a timer for text warning so it disappears after two seconds
+                    setTimeout(() => {
+                        // Reset all text styles/colors and content back to default after text warning 
+                        numberSelection.textContent = '';
+                        userInput = '';
+                        numberSelection.style.color = '';
+                        numberSelection.style.fontSize = '';
+                        numberSelection.style.position = '';
+                        numberSelection.style.left = '';
+                        numberSelection.style.top = '';
+
+                    }, 2000);
+
+                    return; // Exit function
+                }
+
                 let answer = operate(firstNum, secondNum, operator);
                 numberSelection.textContent = answer; // Display answer on screen
 
@@ -96,10 +123,10 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (selection === 'arrow') {
                 userInput = userInput.substring(0, userInput.length - 1);
                 numberSelection.textContent = userInput;
-            } else if (firstNum !== null && secondNum !== null && (selection === '+' || selection === '-' || selection === '×' || selection === '÷')) {
-                operator = selection;
-                let answer = operate(firstNum, secondNum, operator);
-                numberSelection.textContent = answer; // Display answer on screen
+                // If '+/-' key is selected, number switches from positive integer to negative integer
+            } else if (selection === 'negative') {
+                userInput = -userInput;
+                numberSelection.textContent = userInput;
             }
         });
     });

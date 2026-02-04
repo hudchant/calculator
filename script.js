@@ -63,50 +63,56 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // If user selects an operator, store previous number(s) in firstNum variable,
                 // set operator as the current selection, and clear userInput in preparation to receive secondNum
-            } else if ((selection === '+' || selection === '-' || selection === '×' || selection === '÷') && userInput) {
-                firstNum = parseFloat(userInput);
+            } else if (selection === '+' || selection === '-' || selection === '×' || selection === '÷') {
+                if (userInput) {
+                    // Allow user to do mutiple equations back-to-back
+                    if (firstNum !== undefined && operator !== undefined) {
+                        secondNum = parseFloat(userInput);
+                        firstNum = operate(firstNum, secondNum, operator);
+                        numberSelection.textContent = firstNum;
+                    } else {
+                        firstNum = parseFloat(userInput);
+                    }
+                }
+                // If user selects an operator, set the operator with that selection and clear userInput so secondNum can be set
                 operator = selection;
                 userInput = '';
 
                 // If equal sign is pressed and firstNum and operator are already set, store next number(s)
                 // in secondNum variable and call operate() function on the operation
-            } else if (selection === '=' && firstNum && operator && userInput) {
+            } else if (selection === '=' && firstNum !== undefined && operator && userInput) {
                 secondNum = parseFloat(userInput);
-
-                // Do not allow the user to divide any number by zero
-                if (operator === '÷' && secondNum === 0) {
-
-                    numberSelection.textContent = 'You cannot divide by zero.' // Text warning
-                    numberSelection.style.color = '#CC0000'; // Set text color
-                    numberSelection.style.fontSize = '16px'; // Set text size
-                    numberSelection.style.position = 'absolute'; // Set text position
-                    numberSelection.style.left = '44%'; // Center text horizontally
-                    numberSelection.style.top = '29%'; // Center text vertically
-
-                    // Set a timer for text warning so it disappears after two seconds
-                    setTimeout(() => {
-                        // Reset all text styles/colors and content back to default after text warning 
-                        numberSelection.textContent = '';
-                        userInput = '';
-                        numberSelection.style.color = '';
-                        numberSelection.style.fontSize = '';
-                        numberSelection.style.position = '';
-                        numberSelection.style.left = '';
-                        numberSelection.style.top = '';
-
-                    }, 2000);
-
-                    return; // Exit function
-                }
-
                 let answer = operate(firstNum, secondNum, operator);
-                numberSelection.textContent = answer; // Display answer on screen
+                numberSelection.textContent = answer;
 
-                // Reset all fields except firstNum, which will hold the previous answer until next operation called on it
                 firstNum = answer;
-                secondNum = undefined;
                 operator = undefined;
                 userInput = '';
+            }
+            // Do not allow the user to divide any number by zero
+            if (operator === '÷' && secondNum === 0) {
+
+                numberSelection.textContent = 'You cannot divide by zero.' // Text warning
+                numberSelection.style.color = '#CC0000'; // Set text color
+                numberSelection.style.fontSize = '16px'; // Set text size
+                numberSelection.style.position = 'absolute'; // Set text position
+                numberSelection.style.left = '44%'; // Center text horizontally
+                numberSelection.style.top = '29%'; // Center text vertically
+
+                // Set a timer for text warning so it disappears after two seconds
+                setTimeout(() => {
+                    // Reset all text styles/colors and content back to default after text warning 
+                    numberSelection.textContent = '';
+                    userInput = '';
+                    numberSelection.style.color = '';
+                    numberSelection.style.fontSize = '';
+                    numberSelection.style.position = '';
+                    numberSelection.style.left = '';
+                    numberSelection.style.top = '';
+
+                }, 2000);
+
+                return; // Exit function
 
                 // If 'C' (clear) button is pressed, reset all fields including the display
             } else if (selection === 'C') {
@@ -125,12 +131,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 numberSelection.textContent = userInput;
                 // If '+/-' key is selected, number switches from positive integer to negative integer
             } else if (selection === 'negative') {
-                userInput = -userInput;
+                userInput *= -1;
                 numberSelection.textContent = userInput;
             }
         });
     });
 });
-
 
 

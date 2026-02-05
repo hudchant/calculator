@@ -45,97 +45,127 @@ function operate(firstNum, secondNum, operator) {
 document.addEventListener('DOMContentLoaded', function () {
 
     let firstNum = undefined; // First number in math equation
-    let secondNum = undefined; // Second number in math equation
     let operator = undefined; // Operator in math equation
-    let userInput = ''; // Empty input to store user selections when buttons are pressed
-    let numberSelection = document.querySelector('.numbers'); // Reference to the HTML number display div
+    let userInput = ''; // Empty string to store user selections 
+    let numberSelection = document.querySelector('.numbers'); // Reference to the HTML calculator display div
 
+    // Listen for button clicks
     const allButtons = document.querySelectorAll('button');
     allButtons.forEach(button => {
         button.addEventListener('click', () => {
-            const selection = button.id; // User selection is linked to the id of the button pressed
+            // User selection is linked to id of button pressed
+            const selection = button.id;
 
-            // If user selects number(s), store them in the userInput variable and push them onto the display
-            // Set a limit to userInput length
+            // If input is a number and less than 9 digits long, add selected numbers to userInput string
             if (!isNaN(selection) && userInput.length < 9) {
                 userInput += selection;
-                numberSelection.textContent = userInput;
+                numberSelection.textContent = userInput; // Push userInput onto the display
 
-                // If user selects an operator, store previous number(s) in firstNum variable,
-                // set operator as the current selection, and clear userInput in preparation to receive secondNum
             } else if (selection === '+' || selection === '-' || selection === '×' || selection === '÷') {
+                // If selection is an operator sign and userInput is present, set userInput to secondNum variable
                 if (userInput) {
-                    // Allow user to do mutiple equations back-to-back
+                    const secondNum = parseFloat(userInput); // Second number in math equation
+                    // if firstNum and operator are present, set firstNum to call the operate function on the variables
                     if (firstNum !== undefined && operator !== undefined) {
-                        secondNum = parseFloat(userInput);
                         firstNum = operate(firstNum, secondNum, operator);
-                        numberSelection.textContent = firstNum;
+                        // If no firstNum and operator, set firstNum to secondNum variable
                     } else {
-                        firstNum = parseFloat(userInput);
+                        firstNum = secondNum;
                     }
+                    // Push firstNum onto the display
+                    numberSelection.textContent = firstNum;
                 }
-                // If user selects an operator, set the operator with that selection and clear userInput so secondNum can be set
+                // If user selects an operator sign, set their selection to the operator variable
                 operator = selection;
+                // Clear userInput to prepare for the next user selection
                 userInput = '';
-
-                // If equal sign is pressed and firstNum and operator are already set, store next number(s)
-                // in secondNum variable and call operate() function on the operation
+                // If equal sign is selected when firstNum, operator, and userInput are present, set userInput to secondNum variable
             } else if (selection === '=' && firstNum !== undefined && operator && userInput) {
-                secondNum = parseFloat(userInput);
+                const secondNum = parseFloat(userInput);
+                // Call the operate function on all variables
                 let answer = operate(firstNum, secondNum, operator);
+                // Push answer to the display
                 numberSelection.textContent = answer;
 
+                // Return decimal answers rounded to two places
+                if (Number.isInteger(answer) === false) {
+                    answer = answer.toFixed(2);
+                    numberSelection.textContent = answer;
+                } else {
+                    // Return non-decimal input as integers
+                    secondNum = parseFloat(userInput);
+                    let answer = operate(firstNum, secondNum, operator);
+                    numberSelection.textContent = answer;
+                }
+
+                // Do not allow the user to divide any number by zero
+                if (operator === '÷' && secondNum === 0) {
+
+                    numberSelection.textContent = 'You cannot divide by zero.' // Text warning
+                    numberSelection.style.color = '#CC0000'; // Set text color
+                    numberSelection.style.fontSize = '16px'; // Set text size
+                    numberSelection.style.position = 'absolute'; // Set text position
+                    numberSelection.style.left = '44%'; // Center text horizontally
+                    numberSelection.style.top = '29%'; // Center text vertically
+
+                    // Set a timer for text warning so it disappears after two seconds
+                    setTimeout(() => {
+                        // Reset all text styles/colors and content back to default after text warning 
+                        numberSelection.textContent = '';
+                        userInput = '';
+                        numberSelection.style.color = '';
+                        numberSelection.style.fontSize = '';
+                        numberSelection.style.position = '';
+                        numberSelection.style.left = '';
+                        numberSelection.style.top = '';
+
+                    }, 2000);
+
+                    return; // Exit function
+                }
+
+                // Reset variables after performing calculations
                 firstNum = answer;
                 operator = undefined;
                 userInput = '';
-            }
-            // Do not allow the user to divide any number by zero
-            if (operator === '÷' && secondNum === 0) {
-
-                numberSelection.textContent = 'You cannot divide by zero.' // Text warning
-                numberSelection.style.color = '#CC0000'; // Set text color
-                numberSelection.style.fontSize = '16px'; // Set text size
-                numberSelection.style.position = 'absolute'; // Set text position
-                numberSelection.style.left = '44%'; // Center text horizontally
-                numberSelection.style.top = '29%'; // Center text vertically
-
-                // Set a timer for text warning so it disappears after two seconds
-                setTimeout(() => {
-                    // Reset all text styles/colors and content back to default after text warning 
-                    numberSelection.textContent = '';
-                    userInput = '';
-                    numberSelection.style.color = '';
-                    numberSelection.style.fontSize = '';
-                    numberSelection.style.position = '';
-                    numberSelection.style.left = '';
-                    numberSelection.style.top = '';
-
-                }, 2000);
-
-                return; // Exit function
-
-                // If 'C' (clear) button is pressed, reset all fields including the display
+                // If clear button is selected, reset all variables
             } else if (selection === 'C') {
                 firstNum = undefined;
-                secondNum = undefined;
                 operator = undefined;
                 userInput = '';
                 numberSelection.textContent = '';
-                // If '.' is entered, add a decimal, but don't allow more than one decimal per number
+                // Display decimal when selected but don't allow more than one per integer
             } else if (selection === '.' && !userInput.includes('.')) {
                 userInput += selection;
-                numberSelection.textContent += '.';
-                // If arrow (backspace) key is selected, remove one digit from the end of the currently displayed number
+                numberSelection.textContent += selection;
+
+                // Return decimal answers rounded to two places
+                if (Number.isInteger(answer) === false) {
+                    answer = answer.toFixed(2);
+                    numberSelection.textContent = answer;
+                } else {
+                    // Return non-decimal input as integers
+                    secondNum = parseFloat(userInput);
+                    let answer = operate(firstNum, secondNum, operator);
+                    numberSelection.textContent = answer;
+                }
+
+                // If backspace (arrow) button is selected, remove most recently added selection
             } else if (selection === 'arrow') {
                 userInput = userInput.substring(0, userInput.length - 1);
                 numberSelection.textContent = userInput;
-                // If '+/-' key is selected, number switches from positive integer to negative integer
-            } else if (selection === 'negative') {
-                userInput *= -1;
+                // If '+/-' key is selected, userInput switches from positive to negative
+            } else if (selection === 'negative' && userInput !== '') {
+                userInput = (-parseFloat(userInput)).toString();
                 numberSelection.textContent = userInput;
+                // If '+/-' key is selected, firstNum switches from positive to negative
+            } else if (selection === 'negative' && firstNum !== undefined) {
+                firstNum = -firstNum;
+                numberSelection.textContent = firstNum;
             }
         });
     });
 });
+
 
 
